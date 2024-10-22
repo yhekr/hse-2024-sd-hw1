@@ -19,6 +19,8 @@ def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
 
     executer_profile = dr.get_executer_profile(executer_id)
 
+    toll_roads = dr.get_toll_roads(zone_info.display_name)
+
     configs = dr.get_configs()
 
     # all fetcing is done, finally....
@@ -28,12 +30,14 @@ def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
     actual_coin_coeff = zone_info.coin_coeff
     if configs.coin_coeff_settings is not None:
         actual_coin_coeff = min(float(configs.coin_coeff_settings['maximum']), actual_coin_coeff)
-    final_coin_amount = order_data.base_coin_amount * actual_coin_coeff
+    final_coin_amount = order_data.base_coin_amount * actual_coin_coeff + toll_roads.bonus_amount
 
     order = AssignedOrder(
         str(uuid.uuid4()),
         order_id,
         executer_id,
+        actual_coin_coeff,
+        toll_roads.bonus_amount,
         final_coin_amount,
         '',
         datetime.now(),

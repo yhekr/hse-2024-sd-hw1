@@ -1,3 +1,4 @@
+from random import random
 from typing import Optional
 
 from fastapi import FastAPI, Query, HTTPException
@@ -29,6 +30,12 @@ async def get_executer_profile(id: Optional[str] = Query(None, description="An o
         raise HTTPException(status_code=400, detail="ID parameter is required and cannot be empty.")
 
     return ExecuterProfile(id, ['top-coin-expert'], 8.5)
+
+
+@app.get("/toll-roads")
+async def get_toll_roads(zone_display_name: Optional[str] = Query(None, description="An optional ID parameter")):
+    bonus = 50 if random() > 0.1 else 0
+    return {'bonus_amount': bonus}
 
 
 @app.get("/configs")

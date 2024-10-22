@@ -1,11 +1,12 @@
 import requests
 
-from model import OrderData, ZoneData, ExecuterProfile, ConfigMap
+from model import OrderData, ZoneData, ExecuterProfile, ConfigMap, TollRoadsData
 
 order_http = 'http://localhost:3629/order-data'
 zone_http = 'http://localhost:3629/zone-data'
 executer_http = 'http://localhost:3629/executer-profile'
 config_http = 'http://localhost:3629/configs'
+toll_roads_http = 'http://localhost:3629/toll-roads'
 
 
 def get_order_data(order_id: str) -> OrderData:
@@ -43,3 +44,11 @@ def get_configs() -> ConfigMap:
     # TODO: error handling
 
     return ConfigMap(raw_data.json())
+
+
+def get_toll_roads(zone_display_name) -> TollRoadsData:
+    raw_data = requests.get(toll_roads_http, params={'zone_display_name': zone_display_name})
+
+    # TODO: error handling
+
+    return TollRoadsData(raw_data.json()['bonus_amount'])
