@@ -1,15 +1,13 @@
 import time
 import uuid
 from datetime import datetime
-
 import data_requests as dr
 from model import AssignedOrder
-
-order_database = {}  # amazingly fast and totally inreliable database ^
-order_executer_index = {}  # amazingly fast and totally inreliable index
+from db import database as db
 
 MAGIC_CONSTANT = 8
 
+db.init_db()
 
 def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
     # quite a sequential execution of requests, could be improved!
@@ -23,7 +21,7 @@ def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
 
     configs = dr.get_configs()
 
-    # all fetcing is done, finally....
+    # all fetching is done, finally....
     # start building actual response
 
     # adjust coin_coeff with configuration settings
@@ -52,31 +50,35 @@ def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
     print(f'>> New order handled! {order}')
 
     # persisting order!
-    order_database[order_id] = order
-    order_executer_index[executer_id] = order_id
+    db.save_order_to_db(order)
 
 
 def handle_acquire_order_request(executer_id: str):
     try:
-        order_id = order_executer_index[executer_id]
         # race condition is possible here!
-        order_data = order_database[order_id]
-        order_data.acquire_time = datetime.now()
+        order_id = db.get_latest_order_id_for_executer(executer_id)
+        if order_id:
+            order_data = db.get_order_from_db(order_id)
+            order_data.acquire_time = datetime.now()
+            db.save_order_to_db(order_data)
 
-        print(f'>> Order acquired!Acquire time == f{order_data.acquire_time - order_data.assign_time}')
-        return order_data
+            print(f'>> Order acquired! Acquire time == {order_data.acquire_time - order_data.assign_time}')
+            return order_data
     except KeyError:
         print(f'Order for executer ID "{executer_id}" not found!')
         return None
 
 
 def handle_cancel_order_request(order_id: str):
-    order_data = order_database.pop(order_id)
     # race condition is possible here!
-    order_executer_index.pop(order_data.executer_id)
-
-    print(f'>> Order was cancelled!')
-    return order_data
+    order_data = db.get_order_from_db(order_id)
+    if order_data:
+        db.delete_order_from_db(order_id)
+        print(f'>> Order was cancelled!')
+        return order_data
+    else:
+        print(f'Order ID "{order_id}" not found!')
+        return None
 
 
 if __name__ == '__main__':
@@ -95,3 +97,5 @@ if __name__ == '__main__':
     time.sleep(1)
     handle_cancel_order_request('some-order-id-to-cancel')
     print('< Second scenario is over!\n\n')
+
+db.close_db()
