@@ -1,6 +1,6 @@
 import psycopg2
 from datetime import datetime
-from model import AssignedOrder
+from models.model import AssignedOrder
 
 conn = psycopg2.connect(
     dbname="orderdb",

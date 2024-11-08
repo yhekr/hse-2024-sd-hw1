@@ -1,3 +1,14 @@
+## Как тестить order-service?
+
+```
+curl -X POST http://localhost:8000/assign-order/ -H "Content-Type: application/json" -d '{"order_id": "order123", "executer_id": "executer456", "locale": "en-US"}'
+
+curl -X POST http://localhost:8000/acquire-order/ -H "Content-Type: application/json" -d '{"executer_id": "executer456"}'
+
+curl -X POST http://localhost:8000/cancel-order/ -H "Content-Type: application/json" -d '{"order_id": "order123"}'
+```
+
+
 ## Начальная реализация домашнего задания
 Данная реализация:
 

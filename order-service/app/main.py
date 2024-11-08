@@ -24,3 +24,8 @@ async def cancel_order(request: CancelRequest):
     if order:
         return {"message": "Order cancelled successfully", "order": order}
     raise HTTPException(status_code=404, detail="Order not found.")
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
