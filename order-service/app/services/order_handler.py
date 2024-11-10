@@ -20,6 +20,7 @@ def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
     zone_info = stub.GetZoneInfo(ZoneRequest(zone_id=order_data.zone_id))
     executer_profile = stub.GetExecuterProfile(ExecuterRequest(executer_id=executer_id))
     toll_roads = stub.GetTollRoads(TollRoadsRequest(zone_display_name=zone_info.display_name))
+    print("Calling GetConfigs with request:", Empty())
     configs = stub.GetConfigs(Empty())
 
     actual_coin_coeff = zone_info.coin_coeff

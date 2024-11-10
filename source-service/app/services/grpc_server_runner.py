@@ -38,6 +38,7 @@ class DataRequestsService(data_requests_pb2_grpc.DataRequestsServiceServicer):
 
     def GetConfigs(self, request, context):
         # Retrieve configuration settings
+        print("hi from GetConfigs")
         configs = data_requests.get_configs()
         return data_requests_pb2.ConfigData(
             coin_coeff_settings=configs.coin_coeff_settings

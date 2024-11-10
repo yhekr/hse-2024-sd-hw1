@@ -42,6 +42,7 @@ def get_executer_profile(executer_id: str) -> ExecuterProfile:
 
 def get_configs() -> ConfigMap:
     # Проверяем кэш в Redis
+    print("hello from get_configs")
     cached_data = get_cache()
 
     if cached_data:
