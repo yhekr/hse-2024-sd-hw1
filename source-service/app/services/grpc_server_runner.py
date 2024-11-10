@@ -12,28 +12,28 @@ class DataRequestsService(data_requests_pb2_grpc.DataRequestsServiceServicer):
         # Retrieve order data based on order_id from the request
         order_data = data_requests.get_order_data(request.order_id)
         return data_requests_pb2.OrderData(
-            id=order_data["id"],
-            user_id=order_data["user_id"],
-            zone_id=order_data["zone_id"],
-            base_coin_amount=order_data["base_coin_amount"]
+            id=order_data.id,
+            user_id=order_data.user_id,
+            zone_id=order_data.zone_id,
+            base_coin_amount=order_data.base_coin_amount
         )
 
     def GetZoneInfo(self, request, context):
         # Retrieve zone information based on zone_id from the request
         zone_info = data_requests.get_zone_info(request.zone_id)
         return data_requests_pb2.ZoneData(
-            id=zone_info["id"],
-            coin_coeff=zone_info["coin_coeff"],
-            display_name=zone_info["display_name"]
+            id=zone_info.id,
+            coin_coeff=zone_info.coin_coeff,
+            display_name=zone_info.display_name
         )
 
     def GetExecuterProfile(self, request, context):
         # Retrieve executer profile based on executer_id from the request
         executer_profile = data_requests.get_executer_profile(request.executer_id)
         return data_requests_pb2.ExecuterProfile(
-            id=executer_profile["id"],
-            tags=executer_profile["tags"],
-            rating=executer_profile["rating"]
+            id=executer_profile.id,
+            tags=executer_profile.tags,
+            rating=executer_profile.rating
         )
 
     def GetConfigs(self, request, context):
@@ -47,7 +47,7 @@ class DataRequestsService(data_requests_pb2_grpc.DataRequestsServiceServicer):
         # Retrieve toll roads data based on zone_display_name from the request
         toll_roads = data_requests.get_toll_roads(request.zone_display_name)
         return data_requests_pb2.TollRoadsData(
-            bonus_amount=toll_roads["bonus_amount"]
+            bonus_amount=toll_roads.bonus_amount
         )
 
 
