@@ -44,6 +44,8 @@ services:
     environment:
       - GRPC_PORT=50051
       - KAFKA_BROKER=kafka:9092
+      - MOCK_SERVER_HOST=mock-sources-server
+      - MOCK_SERVER_PORT=3629
     depends_on:
       - mock-sources-server
 #      - kafka

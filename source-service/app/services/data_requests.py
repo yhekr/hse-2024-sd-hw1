@@ -1,11 +1,16 @@
+import os
+
 import requests
 from models.model import OrderData, ZoneData, ExecuterProfile, ConfigMap, TollRoadsData
 
-order_http = 'http://localhost:3629/order-data'
-zone_http = 'http://localhost:3629/zone-data'
-executer_http = 'http://localhost:3629/executer-profile'
-config_http = 'http://localhost:3629/configs'
-toll_roads_http = 'http://localhost:3629/toll-roads'
+mock_host = os.getenv("MOCK_SERVER_HOST", "mock-server")
+mock_port = os.getenv("MOCK_SERVER_PORT", "3629")
+
+order_http = f'http://{mock_host}:{mock_port}/order-data'
+zone_http = f'http://{mock_host}:{mock_port}/zone-data'
+executer_http = f'http://{mock_host}:{mock_port}/executer-profile'
+config_http = f'http://{mock_host}:{mock_port}/configs'
+toll_roads_http = f'http://{mock_host}:{mock_port}/toll-roads'
 
 def get_order_data(order_id: str) -> OrderData:
     raw_data = requests.get(order_http, params={'id': order_id})

@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 3629
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3629"]
+CMD ["python", "app/fastapi_stubs.py"]
