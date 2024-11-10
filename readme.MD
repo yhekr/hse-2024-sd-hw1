@@ -8,6 +8,13 @@ curl -X POST http://localhost:8000/acquire-order/ -H "Content-Type: application/
 curl -X POST http://localhost:8000/cancel-order/ -H "Content-Type: application/json" -d '{"order_id": "order123"}'
 ```
 
+## Как генерировать grpc файлы?
+```
+python3 -m grpc_tools.protoc -I=proto --python_out=order-service/app/grpc_client --grpc_python_out=order-service/app/grpc_client proto/data_requests.proto
+
+python -m grpc_tools.protoc -I=proto --python_out=source-service/app/grpc_server --grpc_python_out=source-service/app/grpc_server proto/data_requests.proto
+```
+
 
 ## Начальная реализация домашнего задания
 Данная реализация:

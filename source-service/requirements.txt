@@ -5,3 +5,4 @@ pydantic
 grpcio
 grpcio-tools
 redis
+protobuf

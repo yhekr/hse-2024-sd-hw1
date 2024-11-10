@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package datarequests;
 
-message Empty {}
+import "google/protobuf/empty.proto";
 
 // Order-related messages
 message OrderRequest {
@@ -56,6 +56,6 @@ service DataRequestsService {
   rpc GetOrderData(OrderRequest) returns (OrderData);
   rpc GetZoneInfo(ZoneRequest) returns (ZoneData);
   rpc GetExecuterProfile(ExecuterRequest) returns (ExecuterProfile);
-  rpc GetConfigs(Empty) returns (ConfigData);
+  rpc GetConfigs(google.protobuf.Empty) returns (ConfigData);
   rpc GetTollRoads(TollRoadsRequest) returns (TollRoadsData);
 }

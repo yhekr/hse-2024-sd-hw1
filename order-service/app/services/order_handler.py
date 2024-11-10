@@ -5,6 +5,7 @@ from models.model import AssignedOrder
 from db import database as db
 from grpc_client.data_requests_pb2 import OrderRequest, ZoneRequest, ExecuterRequest, TollRoadsRequest
 from grpc_client.data_requests_pb2_grpc import DataRequestsServiceStub
+from google.protobuf.empty_pb2 import Empty
 
 MAGIC_CONSTANT = 8 #можно вынести в конфиг наверное
 
@@ -19,7 +20,7 @@ def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
     zone_info = stub.GetZoneInfo(ZoneRequest(zone_id=order_data.zone_id))
     executer_profile = stub.GetExecuterProfile(ExecuterRequest(executer_id=executer_id))
     toll_roads = stub.GetTollRoads(TollRoadsRequest(zone_display_name=zone_info.display_name))
-    configs = stub.GetConfigs()
+    configs = stub.GetConfigs(Empty())
 
     actual_coin_coeff = zone_info.coin_coeff
     if configs.coin_coeff_settings:

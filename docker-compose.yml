@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  redis:
+  redis_cache:
     image: redis:latest
     container_name: redis_cache
     ports:
@@ -46,9 +46,10 @@ services:
       - KAFKA_BROKER=kafka:9092
       - MOCK_SERVER_HOST=mock-sources-server
       - MOCK_SERVER_PORT=3629
+      - REDIS_HOST=redis_cache
     depends_on:
       - mock-sources-server
-#      - kafka
+      - redis_cache
 
   # Order Service
   order-service:

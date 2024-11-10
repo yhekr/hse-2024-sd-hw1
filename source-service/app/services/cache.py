@@ -1,11 +1,14 @@
+import os
+
 import redis
 import json
 
 CACHE_KEY = "config_cache"
 CACHE_TTL = 60  # Кэш живет 60 секунд (1 минута)
 
-# Инициализируем клиент Redis (по умолчанию Redis запускается на порту 6379)
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+redis_host = os.getenv("REDIS_HOST", "source-service")
+
+redis_client = redis.Redis(host=redis_host, port=6379, db=0)
 
 
 def get_cache():
