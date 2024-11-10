@@ -6,7 +6,7 @@ from db import database as db
 from grpc_client.data_requests_pb2 import OrderRequest, ZoneRequest, ExecuterRequest, TollRoadsRequest
 from grpc_client.data_requests_pb2_grpc import DataRequestsServiceStub
 
-MAGIC_CONSTANT = 8
+MAGIC_CONSTANT = 8 #можно вынести в конфиг наверное
 
 db.init_db()
 

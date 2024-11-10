@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import data_requests_pb2 as data__requests__pb2
+import grpc_server.data_requests_pb2 as data__requests__pb2
 
 
 class DataRequestsServiceStub(object):

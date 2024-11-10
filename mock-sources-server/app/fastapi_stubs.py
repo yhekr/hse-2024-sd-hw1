@@ -2,6 +2,7 @@ from fastapi import FastAPI, Query, HTTPException
 from model import OrderData, ZoneData, ExecuterProfile
 from random import random
 from typing import Optional
+import uvicorn
 
 app = FastAPI()
 
@@ -32,6 +33,4 @@ async def get_toll_roads(zone_display_name: Optional[str] = Query(None)):
     bonus = 50 if random() > 0.1 else 0
     return {"bonus_amount": bonus}
 
-if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=3629, log_level="info")
+uvicorn.run(app, host="0.0.0.0", port=3629, log_level="info")

@@ -1,5 +1,5 @@
 import requests
-from model import OrderData, ZoneData, ExecuterProfile, ConfigMap, TollRoadsData
+from models.model import OrderData, ZoneData, ExecuterProfile, ConfigMap, TollRoadsData
 
 order_http = 'http://localhost:3629/order-data'
 zone_http = 'http://localhost:3629/zone-data'

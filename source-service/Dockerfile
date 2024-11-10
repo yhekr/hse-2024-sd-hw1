@@ -5,8 +5,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY app/ /app/
 
-EXPOSE 3629
+ENV PYTHONPATH=/app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3629"]
+EXPOSE 50051
+
+CMD ["python", "services/grpc_server_runner.py"]
