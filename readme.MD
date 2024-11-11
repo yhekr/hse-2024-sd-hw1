@@ -10,9 +10,18 @@ curl -X POST http://localhost:8000/cancel-order/ -H "Content-Type: application/j
 
 ## Как генерировать grpc файлы?
 ```
-python3 -m grpc_tools.protoc -I=proto --python_out=order-service/app/grpc_client --grpc_python_out=order-service/app/grpc_client proto/data_requests.proto
+python3 -m grpc_tools.protoc -I=proto \
+  --python_out=source-service/app/grpc_server \
+  --grpc_python_out=source-service/app/grpc_server \
+  --mypy_out=source-service/app/grpc_server \
+  proto/data_requests.proto
 
-python -m grpc_tools.protoc -I=proto --python_out=source-service/app/grpc_server --grpc_python_out=source-service/app/grpc_server proto/data_requests.proto
+
+python3 -m grpc_tools.protoc -I=proto \
+  --python_out=order-service/app/grpc_client \ 
+  --grpc_python_out=order-service/app/grpc_client \ 
+  --mypy_out=order-service/app/grpc_client \ 
+  proto/data_requests.proto
 ```
 
 
