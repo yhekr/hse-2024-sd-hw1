@@ -15,12 +15,10 @@ channel = grpc.insecure_channel("source_service:50051")
 stub = DataRequestsServiceStub(channel)
 
 def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
-    # sequential gRPC requests but could be improved
     order_data = stub.GetOrderData(OrderRequest(order_id=order_id))
     zone_info = stub.GetZoneInfo(ZoneRequest(zone_id=order_data.zone_id))
     executer_profile = stub.GetExecuterProfile(ExecuterRequest(executer_id=executer_id))
     toll_roads = stub.GetTollRoads(TollRoadsRequest(zone_display_name=zone_info.display_name))
-    print("Calling GetConfigs with request:", Empty())
     configs = stub.GetConfigs(Empty())
 
     actual_coin_coeff = zone_info.coin_coeff
@@ -29,15 +27,15 @@ def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
     final_coin_amount = order_data.base_coin_amount * actual_coin_coeff + toll_roads.bonus_amount
 
     order = AssignedOrder(
-        str(uuid.uuid4()),
-        order_id,
-        executer_id,
-        actual_coin_coeff,
-        toll_roads.bonus_amount,
-        final_coin_amount,
-        '',
-        datetime.now(),
-        None
+        assign_order_id=str(uuid.uuid4()),
+        order_id=order_id,
+        executer_id=executer_id,
+        coin_coeff=actual_coin_coeff,
+        coin_bonus_amount=toll_roads.bonus_amount,
+        final_coin_amount=final_coin_amount,
+        route_information='',
+        assign_time=datetime.now(),
+        acquire_time=None
     )
 
     if executer_profile.rating >= MAGIC_CONSTANT:

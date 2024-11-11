@@ -41,22 +41,13 @@ def get_executer_profile(executer_id: str) -> ExecuterProfile:
     )
 
 def get_configs() -> ConfigMap:
-    # Проверяем кэш в Redis
-    print("hello from get_configs")
     cached_data = get_cache()
-
     if cached_data:
-        # Декодируем и возвращаем кэшированные данные
         config_data = json.loads(cached_data)
-        return ConfigMap(config_data)
-
-    # Если кэш пустой или устарел, получаем данные через HTTP
+        return ConfigMap(coin_coeff_settings=config_data["coin_coeff_settings"])
     config_data = RequestHandler.fetch_data(config_http)
-
-    # Сохраняем данные в Redis с временем жизни (TTL)
-    set_cache(config_data)
-
-    return ConfigMap(config_data)
+    set_cache(json.dumps(config_data))
+    return ConfigMap(coin_coeff_settings=config_data["coin_coeff_settings"])
 
 def get_toll_roads(zone_display_name: str) -> TollRoadsData:
     data = RequestHandler.fetch_data(toll_roads_http, params={'zone_display_name': zone_display_name})
