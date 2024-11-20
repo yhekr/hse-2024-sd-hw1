@@ -46,7 +46,7 @@ def get_configs() -> ConfigMap:
         config_data = json.loads(cached_data)
         return ConfigMap(coin_coeff_settings=config_data["coin_coeff_settings"])
     config_data = RequestHandler.fetch_data(config_http)
-    set_cache(json.dumps(config_data))
+    set_cache(config_data)
     return ConfigMap(coin_coeff_settings=config_data["coin_coeff_settings"])
 
 def get_toll_roads(zone_display_name: str) -> TollRoadsData:
