@@ -49,11 +49,13 @@ def handle_acquire_order_request(executer_id: str):
         order_id = db.get_latest_order_id_for_executer(executer_id)
         if order_id:
             order_data = db.get_order_from_db(order_id)
-            order_data.acquire_time = datetime.now()
-            db.save_order_to_db(order_data)
-
-            print(f'>> Order acquired! Acquire time == {order_data.acquire_time - order_data.assign_time}')
+            current_time = datetime.now()
+            order_data.acquire_time = current_time
+            db.update_order_acquire_time(order_data.order_id, current_time)
+            print(f'>> Order acquired! Acquire time == {current_time - order_data.assign_time}')
             return order_data
+        print()
+        return None
     except KeyError:
         print(f'Order for executer ID "{executer_id}" not found!')
         return None
@@ -61,8 +63,9 @@ def handle_acquire_order_request(executer_id: str):
 def handle_cancel_order_request(order_id: str):
     order_data = db.get_order_from_db(order_id)
     if order_data:
-        db.delete_order_from_db(order_id)
+        db.cancel_order(order_id)
         print(f'>> Order was cancelled!')
+        order_data.is_canceled = True
         return order_data
     else:
         print(f'Order ID "{order_id}" not found!')
