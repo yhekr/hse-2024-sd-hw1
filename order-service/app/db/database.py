@@ -10,6 +10,17 @@ conn = psycopg2.connect(
     port="5432"
 )
 
+def drop_db():
+    with conn.cursor() as cursor:
+        cursor.execute("DROP TABLE IF EXISTS orders CASCADE")
+        conn.commit()
+
+def check_db():
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM information_schema.columns WHERE table_name='orders'")
+        columns = cursor.fetchall()
+        print(columns)
+
 def init_db():
     with conn.cursor() as cursor:
         cursor.execute("""
@@ -17,12 +28,14 @@ def init_db():
             assign_order_id TEXT PRIMARY KEY,
             order_id TEXT NOT NULL,
             executer_id TEXT,
-            coin_coeff FLOAT,
+            base_coin_amount FLOAT,
+            coin_coef FLOAT,
             bonus_amount FLOAT,
             final_coin_amount FLOAT,
             route_information TEXT,
             assign_time TIMESTAMP,
-            acquire_time TIMESTAMP
+            acquire_time TIMESTAMP,
+            is_canceled BOOLEAN
         )
         """)
         conn.commit()
@@ -30,20 +43,22 @@ def init_db():
 def save_order_to_db(order):
     with conn.cursor() as cursor:
         cursor.execute("""
-        INSERT INTO orders (assign_order_id, order_id, executer_id, coin_coeff, bonus_amount, final_coin_amount, route_information, assign_time, acquire_time)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO orders (assign_order_id, order_id, executer_id, base_coin_amount, coin_coef, bonus_amount, final_coin_amount, route_information, assign_time, acquire_time, is_canceled)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (assign_order_id) DO UPDATE
         SET acquire_time = EXCLUDED.acquire_time
         """, (
             order.assign_order_id,
             order.order_id,
             order.executer_id,
-            order.coin_coeff,
-            order.coin_bonus_amount,
+            order.base_coin_amount,
+            order.coin_coef,
+            order.bonus_amount,
             order.final_coin_amount,
             order.route_information,
             order.assign_time,
-            order.acquire_time
+            order.acquire_time,
+            order.is_canceled
         ))
         conn.commit()
 
@@ -51,7 +66,7 @@ def save_order_to_db(order):
 def get_order_from_db(order_id):
     with conn.cursor() as cursor:
         cursor.execute("""
-        SELECT assign_order_id, order_id, executer_id, coin_coeff, bonus_amount, final_coin_amount, route_information, assign_time, acquire_time 
+        SELECT assign_order_id, order_id, executer_id, base_coin_amount, coin_coef, bonus_amount, final_coin_amount, route_information, assign_time, acquire_time, is_canceled
         FROM orders WHERE order_id = %s
         """, (order_id,))
 
@@ -61,12 +76,14 @@ def get_order_from_db(order_id):
                 assign_order_id=row[0],
                 order_id=row[1],
                 executer_id=row[2],
-                coin_coeff=row[3],
-                coin_bonus_amount=row[4],
-                final_coin_amount=row[5],
-                route_information=row[6],
-                assign_time=row[7],
-                acquire_time=row[8]
+                base_coin_amount=row[3],
+                coin_coef=row[4],
+                bonus_amount=row[5],
+                final_coin_amount=row[6],
+                route_information=row[7],
+                assign_time=row[8],
+                acquire_time=row[9],
+                is_canceled=row[10]
             )
         return None
 

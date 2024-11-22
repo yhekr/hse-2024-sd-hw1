@@ -3,9 +3,8 @@ from datetime import datetime
 import grpc
 from models.model import AssignedOrder
 from db import database as db
-from grpc_client.data_requests_pb2 import OrderRequest, ZoneRequest, ExecuterRequest, TollRoadsRequest
+from grpc_client.data_requests_pb2 import GetOrderInfoRequest
 from grpc_client.data_requests_pb2_grpc import DataRequestsServiceStub
-from google.protobuf.empty_pb2 import Empty
 
 MAGIC_CONSTANT = 8 #можно вынести в конфиг наверное
 
@@ -15,31 +14,28 @@ channel = grpc.insecure_channel("source_service:50051")
 stub = DataRequestsServiceStub(channel)
 
 def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
-    order_data = stub.GetOrderData(OrderRequest(order_id=order_id))
-    zone_info = stub.GetZoneInfo(ZoneRequest(zone_id=order_data.zone_id))
-    executer_profile = stub.GetExecuterProfile(ExecuterRequest(executer_id=executer_id))
-    toll_roads = stub.GetTollRoads(TollRoadsRequest(zone_display_name=zone_info.display_name))
-    configs = stub.GetConfigs(Empty())
+    order_info = stub.GetOrderInfo(GetOrderInfoRequest(order_id=order_id, executer_id=executer_id))
 
-    actual_coin_coeff = zone_info.coin_coeff
-    if configs.coin_coeff_settings:
-        actual_coin_coeff = min(float(configs.coin_coeff_settings.get('maximum', '1')), actual_coin_coeff)
-    final_coin_amount = order_data.base_coin_amount * actual_coin_coeff + toll_roads.bonus_amount
+    order_price = order_info.order_price
+    executer_profile = order_info.executor_profile
+    zone_display_name = order_info.zone_display_name
 
     order = AssignedOrder(
         assign_order_id=str(uuid.uuid4()),
         order_id=order_id,
         executer_id=executer_id,
-        coin_coeff=actual_coin_coeff,
-        coin_bonus_amount=toll_roads.bonus_amount,
-        final_coin_amount=final_coin_amount,
+        base_coin_amount=order_price.base_order_price,
+        coin_coef=order_price.coin_coef,
+        bonus_amount=order_price.coin_bonus_amount,
+        final_coin_amount=order_price.final_order_price,
         route_information='',
         assign_time=datetime.now(),
-        acquire_time=None
+        acquire_time=None,
+        is_canceled=False
     )
 
     if executer_profile.rating >= MAGIC_CONSTANT:
-        order.route_information = f'Order at zone "{zone_info.display_name}"'
+        order.route_information = f'Order at zone "{zone_display_name}"'
     else:
         order.route_information = "Order at somewhere"
 
