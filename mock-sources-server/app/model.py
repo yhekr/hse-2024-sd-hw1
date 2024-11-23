@@ -27,3 +27,8 @@ class ConfigMap(BaseModel):
 
 class TollRoadsData(BaseModel):
     bonus_amount: float
+
+
+class CancelStatus(BaseModel):
+    order_id: str
+    status: str

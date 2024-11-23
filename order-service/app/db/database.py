@@ -1,6 +1,8 @@
 import psycopg2
 from datetime import datetime
 from models.model import AssignedOrder
+import json
+
 
 conn = psycopg2.connect(
     dbname="orderdb",
@@ -11,17 +13,26 @@ conn = psycopg2.connect(
 )
 
 
+def create_outbox():
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT 1 FROM pg_type WHERE typname = 'status'")
+        result = cursor.fetchone()
+        if not result:
+            cursor.execute("CREATE TYPE status AS ENUM ('waiting', 'execution')")
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS outbox (
+            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            payload JSON,
+            status status
+        )
+        """)
+        conn.commit()
+
+
 def drop_db():
     with conn.cursor() as cursor:
         cursor.execute("DROP TABLE IF EXISTS orders CASCADE")
         conn.commit()
-
-
-def check_db():
-    with conn.cursor() as cursor:
-        cursor.execute("SELECT * FROM information_schema.columns WHERE table_name='orders'")
-        columns = cursor.fetchall()
-        print(columns)
 
 
 def init_db():
@@ -68,9 +79,9 @@ def save_order_to_db(order):
 def update_order_acquire_time(order_id, acquire_time):
     with conn.cursor() as cursor:
         cursor.execute(f"""
-            UPDATE orders
-            SET acquire_time = '{acquire_time}'
-            WHERE order_id = '{order_id}'
+        UPDATE orders
+        SET acquire_time = '{acquire_time}'
+        WHERE order_id = '{order_id}'
         """)
         conn.commit()
 
@@ -114,12 +125,10 @@ def get_latest_order_id_for_executer(executer_id):
 
 
 def cancel_order(order_id):
+    pl = {'order_id': order_id} # some data to pass for additional actions
     with conn.cursor() as cursor:
-        cursor.execute(f"""
-            UPDATE orders
-            SET is_canceled = True
-            WHERE order_id = {order_id}
-        """)
+        cursor.execute(f"UPDATE orders SET is_canceled = True WHERE order_id = '{order_id}'")
+        cursor.execute(f"INSERT INTO outbox (payload, status) VALUES ('{json.dumps(pl)}', 'waiting')")
         conn.commit()
 
 
