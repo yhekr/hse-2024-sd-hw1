@@ -3,8 +3,8 @@ import json
 
 import requests
 from models.model import OrderData, ZoneData, ExecuterProfile, ConfigMap, TollRoadsData
-from request_handler import RequestHandler
-from cache import set_cache, get_cache
+from services.request_handler import RequestHandler
+from services.cache import set_cache, get_cache
 
 mock_host = os.getenv("MOCK_SERVER_HOST", "mock-server")
 mock_port = os.getenv("MOCK_SERVER_PORT", "3629")
