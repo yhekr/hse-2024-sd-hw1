@@ -73,5 +73,17 @@ services:
     ports:
       - "3629:3629"
 
+  outbox-processor:
+    build: ./outbox-processor
+    container_name: outbox_processor
+    environment:
+      - MOCK_SERVER_HOST=mock-sources-server
+      - MOCK_SERVER_PORT=3629
+    depends_on:
+      - db
+      - mock-sources-server
+      - order-service
+    restart: on-failure:10
+
 volumes:
   db_data:

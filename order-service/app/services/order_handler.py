@@ -9,6 +9,7 @@ from grpc_client.data_requests_pb2_grpc import DataRequestsServiceStub
 MAGIC_CONSTANT = 8 #можно вынести в конфиг наверное
 
 db.init_db()
+db.create_outbox()
 
 channel = grpc.insecure_channel("source_service:50051")
 stub = DataRequestsServiceStub(channel)
