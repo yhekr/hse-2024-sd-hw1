@@ -15,9 +15,6 @@ channel = grpc.insecure_channel("source_service:50051")
 stub = DataRequestsServiceStub(channel)
 
 def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
-    db.drop_db()
-    db.init_db()
-    db.create_outbox()
     order_info = stub.GetOrderInfo(GetOrderInfoRequest(order_id=order_id, executer_id=executer_id))
 
     order_price = order_info.order_price
