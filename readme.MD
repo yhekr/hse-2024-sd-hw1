@@ -1,4 +1,14 @@
-## Как тестить order-service?
+# Сервис Назначения Заказов
+
+Сервис управления заказами, обеспечивающий хранение данных о заказах и взаимодействие с внешними системами. 
+
+Система поддерживает высокую доступность, масштабируемость, надёжность и идемпотентность операций.
+
+### ADR
+
+https://docs.google.com/document/d/1qEkNfho60Py_Mx6pEOZr7hfJvXBQWhewGb_JW94Z9rQ/edit?tab=t.0#heading=h.t5vg7sgbcah8
+
+### Как слать запросы?
 
 ```
 curl -X POST http://localhost:8000/assign-order/ -H "Content-Type: application/json" -d '{"order_id": "order123", "executer_id": "executer456", "locale": "en-US"}'
@@ -7,41 +17,3 @@ curl -X POST http://localhost:8000/acquire-order/ -H "Content-Type: application/
 
 curl -X POST http://localhost:8000/cancel-order/ -H "Content-Type: application/json" -d '{"order_id": "order123"}'
 ```
-
-## Как генерировать grpc файлы?
-```
-python3 -m grpc_tools.protoc -I=proto \
-  --python_out=source-service/app/grpc_server \
-  --grpc_python_out=source-service/app/grpc_server \
-  --pyi_out=source-service/app/grpc_server \
-  proto/data_requests.proto
-
-
-python3 -m grpc_tools.protoc -I=proto \
-  --python_out=order-service/app/grpc_client \ 
-  --grpc_python_out=order-service/app/grpc_client \ 
-  --pyi_out=order-service/app/grpc_client \ 
-  proto/data_requests.proto
-```
-
-
-## Начальная реализация домашнего задания
-Данная реализация:
-
-- не выполняет функциональные требования
-- предусмотренно нарушает принципы SOLID, и, как следствие, не выполняет требования по Maintainability
-- не имеет в наличии БД, то есть не выполняет требования по Reliability
-- ничего не говорит про развертывание и не выполняет требования по Scalability
-
-Тем не менее, тут описаны некоторые основные API, и можно сделать вывод о том, куда будет развиваться приложение
-Некоторые подходы сознательно применены (например, выделен слой доступа к данным и объекты DTO), но некоторые
-сознательно нарушены :)
-
-Содержательная часть вашей работы состоит в том, чтобы не фокусируясь на бизнес-логике -- благо, тут она довольно
-простая -- сформировать подходящую архитектуру и написать вашу реализацию с учетом принципов SOLID.
-
-### Описание
-
-- main.py содержит несколько функций-реализаций бизнес-логики для примера
-    - Также, содержит 2 тестовых сценария работы
-- Вы можете использовать у себя неимоверной сложности модуль 'fastapi_stubs.py' для отладки/дебага :)
