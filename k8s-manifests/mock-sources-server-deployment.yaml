@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.34.0 (cbf2835db)
+  labels:
+    io.kompose.service: mock-sources-server
+  name: mock-sources-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mock-sources-server
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.34.0 (cbf2835db)
+      labels:
+        io.kompose.service: mock-sources-server
+    spec:
+      containers:
+        - image: hsecapetown/hse-2024-sd-hw1-mock-sources-server:latest
+          name: mock-sources-server
+          ports:
+            - containerPort: 3629
+              protocol: TCP
+      restartPolicy: Always
