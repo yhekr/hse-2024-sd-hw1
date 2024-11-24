@@ -13,48 +13,6 @@ conn = psycopg2.connect(
 )
 
 
-def create_outbox():
-    with conn.cursor() as cursor:
-        cursor.execute("SELECT 1 FROM pg_type WHERE typname = 'status'")
-        result = cursor.fetchone()
-        if not result:
-            cursor.execute("CREATE TYPE status AS ENUM ('waiting', 'execution')")
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS outbox (
-            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            payload JSON,
-            status status
-        )
-        """)
-        conn.commit()
-
-
-def drop_db():
-    with conn.cursor() as cursor:
-        cursor.execute("DROP TABLE IF EXISTS orders CASCADE")
-        conn.commit()
-
-
-def init_db():
-    with conn.cursor() as cursor:
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS orders (
-            assign_order_id TEXT PRIMARY KEY,
-            order_id TEXT NOT NULL,
-            executer_id TEXT,
-            base_coin_amount FLOAT,
-            coin_coef FLOAT,
-            bonus_amount FLOAT,
-            final_coin_amount FLOAT,
-            route_information TEXT,
-            assign_time TIMESTAMP,
-            acquire_time TIMESTAMP,
-            is_canceled BOOLEAN
-        )
-        """)
-        conn.commit()
-
-
 def save_order_to_db(order):
     with conn.cursor() as cursor:
         cursor.execute("""

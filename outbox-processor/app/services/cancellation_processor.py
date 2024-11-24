@@ -9,7 +9,6 @@ mock_port = os.getenv("MOCK_SERVER_PORT", "3629")
 cancel_http = f'http://{mock_host}:{mock_port}/cancel-order'
 
 logging.basicConfig(level=logging.DEBUG)
-db.init_db()
 
 def outbox_fetch():
     canceled_orders = db.fetch_waiting()

@@ -6,10 +6,7 @@ from db import database as db
 from grpc_client.data_requests_pb2 import GetOrderInfoRequest
 from grpc_client.data_requests_pb2_grpc import DataRequestsServiceStub
 
-MAGIC_CONSTANT = 8 #можно вынести в конфиг наверное
-
-db.init_db()
-db.create_outbox()
+MAGIC_CONSTANT = 8
 
 channel = grpc.insecure_channel("source-service:80")
 stub = DataRequestsServiceStub(channel)
