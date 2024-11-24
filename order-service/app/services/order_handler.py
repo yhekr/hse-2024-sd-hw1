@@ -11,7 +11,7 @@ MAGIC_CONSTANT = 8 #можно вынести в конфиг наверное
 db.init_db()
 db.create_outbox()
 
-channel = grpc.insecure_channel("source_service:50051")
+channel = grpc.insecure_channel("source-service:80")
 stub = DataRequestsServiceStub(channel)
 
 def handle_assign_order_request(order_id: str, executer_id: str, locale: str):

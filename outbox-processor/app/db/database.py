@@ -4,8 +4,8 @@ from datetime import datetime
 conn = psycopg2.connect(
     dbname="orderdb",
     user="user",
-    password="password",
-    host="db",
+    password="jeusf23aco3oa9a9a0",
+    host="db-data",
     port="5432"
 )
 
@@ -45,4 +45,14 @@ def get_tables():
         result = cursor.fetchall()
         print("orders:\n\n")
         logging.debug(result)
+        conn.commit()
+
+def init_db():  # я ничего не понял, поправьте тут, пожалуйста
+    with conn.cursor() as cursor:
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS outbox (
+            id TEXT PRIMARY KEY,
+            status TEXT
+        )
+        """)
         conn.commit()
