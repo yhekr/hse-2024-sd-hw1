@@ -5,3 +5,8 @@ pydantic
 grpcio
 grpcio-tools
 protobuf
+pytest
+pytest-asyncio
+asynctest
+pytest-mock
+httpx
