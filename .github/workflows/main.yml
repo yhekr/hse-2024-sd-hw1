@@ -6,7 +6,7 @@ on:
       - main
 jobs:
   build_and_push_source_server_to_docker_hub:
-    name: Push Docker image to DockerHub
+    name: Push source-service Docker image to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -26,7 +26,7 @@ jobs:
           tags: hsecapetown/hse-2024-sd-hw1-source-service:latest
 
   build_and_push_order_service_to_docker_hub:
-    name: Push Docker image to DockerHub
+    name: Push order-service Docker image to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -41,6 +41,6 @@ jobs:
       - name: Push to DockerHub
         uses: docker/build-push-action@v4
         with:
-          context: ./order-server/
+          context: order-server/
           push: true
           tags: hsecapetown/hse-2024-sd-hw1-order-service:latest
