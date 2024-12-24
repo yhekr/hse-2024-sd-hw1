@@ -27,3 +27,11 @@ class ConfigMap(BaseModel):
 
 class TollRoadsData(BaseModel):
     bonus_amount: float
+
+
+class Info(BaseModel):
+    order_data: OrderData
+    zone_data: ZoneData
+    executer_profile: ExecuterProfile
+    config_map: ConfigMap
+    toll_roads_data: TollRoadsData
