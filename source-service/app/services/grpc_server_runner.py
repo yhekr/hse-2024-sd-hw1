@@ -6,6 +6,7 @@ from grpc_server.data_requests_pb2 import GetOrderInfoResponse, OrderPrice, Exec
 from services import data_requests
 from models.model import Info 
 from services.order_info import get_order_info
+from services.price_calculator import calculateFinalPrice
 
 
 class DataRequestsService(data_requests_pb2_grpc.DataRequestsServiceServicer):
@@ -14,10 +15,7 @@ class DataRequestsService(data_requests_pb2_grpc.DataRequestsServiceServicer):
     def GetOrderInfo(self, request, context):
         info = get_order_info(request)
 
-        actual_coin_coeff = info.zone_data.coin_coeff
-        if info.config_map.coin_coeff_settings:
-            actual_coin_coeff = min(float(info.config_map.coin_coeff_settings.get('maximum', '1')), actual_coin_coeff)
-        final_order_price = info.order_data.base_coin_amount * actual_coin_coeff + info.toll_roads_data.bonus_amount
+        final_order_price = calculateFinalPrice(info)
 
         return GetOrderInfoResponse(
             order_price=OrderPrice(
