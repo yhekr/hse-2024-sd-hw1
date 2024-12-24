@@ -15,3 +15,7 @@ class AssignedOrder(BaseModel):
     assign_time: datetime
     acquire_time: Optional[datetime]
     is_canceled: bool
+
+
+class CancellationPayload(BaseModel):
+    order_id: str

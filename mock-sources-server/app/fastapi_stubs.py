@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query, HTTPException
 from model import OrderData, ZoneData, ExecuterProfile, CancelStatus
-from random import random
+import random
 from typing import Optional
 import uvicorn
 
@@ -30,12 +30,17 @@ async def get_configs():
 
 @app.get("/toll-roads")
 async def get_toll_roads(zone_display_name: Optional[str] = Query(None)):
-    bonus = 50 if random() > 0.1 else 0
+    bonus = 50 if random.random() > 0.1 else 0
     return {"bonus_amount": bonus}
 
 @app.get("/cancel-order")
 async def cancel_order(order_id: Optional[str] = Query(None)):
-    print(f"Order {order_id} has canceled successfully!")
-    return CancelStatus(order_id=order_id, status="success")
+    if random.randint(0, 20) > 0:
+        print(f"Order {order_id} has canceled successfully!")
+        return CancelStatus(order_id=order_id, status="success")
+    else:
+        print(f"Error on delivering order {order_id}")
+        raise HTTPException(status_code=500, detail='Internal error')
+
 
 uvicorn.run(app, host="0.0.0.0", port=3629, log_level="info")

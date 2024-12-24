@@ -1,5 +1,4 @@
 import psycopg2
-from datetime import datetime
 from models.model import AssignedOrder
 import json
 
@@ -82,11 +81,10 @@ def get_latest_order_id_for_executer(executer_id):
         return row[0] if row else None
 
 
-def cancel_order(order_id):
-    pl = {'order_id': order_id} # some data to pass for additional actions
+def cancel_order(order_id, payload):
     with conn.cursor() as cursor:
         cursor.execute(f"UPDATE orders SET is_canceled = True WHERE order_id = '{order_id}'")
-        cursor.execute(f"INSERT INTO outbox (payload, status) VALUES ('{json.dumps(pl)}', 'waiting')")
+        cursor.execute(f"INSERT INTO outbox (payload, status) VALUES ('{json.dumps(payload.model_dump_json())}', 'waiting')")
         conn.commit()
 
 

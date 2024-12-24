@@ -10,6 +10,7 @@ timestamps_arr = list()
 
 
 def init_db():
+    db.drop_db()
     global last_timestamp
     global next_timestamp
     last_timestamp = datetime.datetime.now()

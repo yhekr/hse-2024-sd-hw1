@@ -29,6 +29,7 @@ def create_outbox():
 def drop_db():
     with conn.cursor() as cursor:
         cursor.execute("DROP TABLE IF EXISTS orders CASCADE")
+        cursor.execute("DROP TABLE IF EXISTS outbox CASCADE")
         conn.commit()
 
 
@@ -73,23 +74,27 @@ def drop_index(index_name):
 
 def fetch_waiting():
     with conn.cursor() as cursor:
-        cursor.execute("SELECT * FROM outbox WHERE status = 'waiting'")
+        cursor.execute("""
+        UPDATE outbox
+        SET status = 'execution'
+        WHERE id IN (
+            SELECT id FROM outbox WHERE status = 'waiting' LIMIT 10
+        )
+        RETURNING *               
+        """)
         result = cursor.fetchall()
-        cursor.execute("UPDATE outbox SET status = 'execution' WHERE status = 'waiting'")
-        conn.commit()
         return result
 
 
-def success_on_cancel(id):
+def success_on_cancel(ids):
     with conn.cursor() as cursor:
-        cursor.execute(f"DELETE FROM outbox WHERE id = {id}")
+        cursor.execute(f"DELETE FROM outbox WHERE id = ANY(%s)", (ids,))
         conn.commit()
 
 
-def error_on_cancel(id):
+def error_on_cancel():
     with conn.cursor() as cursor:
-        cursor.execute(f"UPDATE outbox SET status = 'waiting' WHERE id = {id}")
-        conn.commit()
+        conn.rollback()
 
 
 import logging

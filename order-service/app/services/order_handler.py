@@ -5,10 +5,11 @@ from models.model import AssignedOrder
 from db import database as db
 from grpc_client.data_requests_pb2 import GetOrderInfoRequest
 from grpc_client.data_requests_pb2_grpc import DataRequestsServiceStub
+from services.assemble_payload import assemblePayload
 
 MAGIC_CONSTANT = 8
 
-channel = grpc.insecure_channel("source-service:80")
+channel = grpc.insecure_channel("source-service:50051")
 stub = DataRequestsServiceStub(channel)
 
 def handle_assign_order_request(order_id: str, executer_id: str, locale: str):
@@ -61,7 +62,8 @@ def handle_acquire_order_request(executer_id: str):
 def handle_cancel_order_request(order_id: str):
     order_data = db.get_order_from_db(order_id)
     if order_data:
-        db.cancel_order(order_id)
+        payload = assemblePayload(order_data)
+        db.cancel_order(order_id, payload)
         print(f'>> Order was cancelled!')
         order_data.is_canceled = True
         return order_data
