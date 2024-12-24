@@ -8,6 +8,10 @@
 
 https://docs.google.com/document/d/1qEkNfho60Py_Mx6pEOZr7hfJvXBQWhewGb_JW94Z9rQ/edit?tab=t.0#heading=h.t5vg7sgbcah8
 
+### Отчет о тестировании
+
+https://docs.google.com/document/d/17D4DBvhsImV1VAVdIxyg2qNOMZAOoQz03aoStYgdBlo/edit?usp=sharing
+
 ### Как слать запросы?
 
 ```
