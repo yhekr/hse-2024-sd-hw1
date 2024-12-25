@@ -4,7 +4,7 @@ from datetime import datetime
 conn = psycopg2.connect(
     dbname="orderdb",
     user="user",
-    password="jeusf23aco3oa9a9a0",
+    password="password",
     host="db-data",
     port="5432"
 )
